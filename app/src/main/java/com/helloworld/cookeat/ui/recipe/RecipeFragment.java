@@ -30,6 +30,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -107,10 +109,10 @@ public class RecipeFragment extends Fragment {
                             favorites.remove(i);
                         }
                     }
+                    currentIndex = 0;
                 }else{
                     favorites.add(recipeList.get(currentIndex));
                 }
-                Log.v("AFTER PRESS ADD",favorites.toString());
                 writeFavorite();
             }
         });
@@ -120,6 +122,16 @@ public class RecipeFragment extends Fragment {
             public void onClick(View v) {
                 favoritePressed = !favoritePressed;
                 currentIndex = 0;
+                updateRecipeFragmentId();
+            }
+        });
+
+        getView().findViewById(R.id.recipe_random).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                favoritePressed = false;
+                currentIndex = 0;
+                Collections.shuffle(recipeList);
                 updateRecipeFragmentId();
             }
         });
@@ -174,7 +186,6 @@ public class RecipeFragment extends Fragment {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        Log.v("AFTER READ",favorites.toString());
     }
 
     public void writeFavorite() {
