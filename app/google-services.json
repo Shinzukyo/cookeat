@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1065681197237",
+    "firebase_url": "https://cookeat-162cb.firebaseio.com",
+    "project_id": "cookeat-162cb",
+    "storage_bucket": "cookeat-162cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1065681197237:android:6c8f44436a919a47a186fc",
+        "android_client_info": {
+          "package_name": "com.helloworld.cookeat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1065681197237-ge9vo2b9mk082b0glkj2450ad4hqkc3r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.helloworld.cookeat",
+            "certificate_hash": "4e72fc844c9d5f2acede1bb0656629dcb5c59810"
+          }
+        },
+        {
+          "client_id": "1065681197237-k0enjiuhj65frk92k8p9pq3cpn7r5vci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKQo6-gMXlc-N3HrbpxQbA3AbT5H7J1Mk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1065681197237-k0enjiuhj65frk92k8p9pq3cpn7r5vci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

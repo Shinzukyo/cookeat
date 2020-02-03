@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">CookEat</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Cook\'eat</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_recipe">Recette</string>
+    <string name="menu_slideshow">En cours</string>
+    <string name="menu_tools">Parameter</string>
+    <string name="recipe_advice">Conseil</string>
+    <string name="recipe_favorite">Vos favoris</string>
+    <string name="recipe_random">Aléatoire</string>
+    <string name="recipe_prev">Précédent</string>
+    <string name="recipe_add_fav">Ajouter favoris</string>
+    <string name="recipe_next">Suivant</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
