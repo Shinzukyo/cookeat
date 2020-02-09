@@ -10,6 +10,7 @@
     <string name="menu_recipe">Recette</string>
     <string name="menu_slideshow">En cours</string>
     <string name="menu_tools">Parameter</string>
+
     <string name="recipe_advice">Conseil</string>
     <string name="recipe_favorite">Vos favoris</string>
     <string name="recipe_random">Aléatoire</string>
@@ -17,6 +18,14 @@
     <string name="recipe_add_fav">Ajouter favoris</string>
     <string name="recipe_next">Suivant</string>
 
+    <string name="recipe_detail_ingredient">Ingrédients</string>
+    <string name="recipe_detail_step">Voir étapes</string>
+    <string name="recipe_detail_begin">Commencer</string>
+
+    <string name="timer">Timer</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

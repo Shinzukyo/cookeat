@@ -1,14 +1,13 @@
 package com.helloworld.cookeat.ui.recipe;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,8 +18,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.helloworld.cookeat.Constant;
 import com.helloworld.cookeat.R;
-import com.helloworld.cookeat.RecipeCard;
+import com.helloworld.cookeat.fragment.RecipeCard;
+import com.helloworld.cookeat.fragment.RecipeDetailActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,9 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 public class RecipeFragment extends Fragment {
@@ -142,7 +141,22 @@ public class RecipeFragment extends Fragment {
                 readFavorite();
             }
         });
+
+        getView().findViewById(R.id.recipe_card_fragment).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(getActivity(), RecipeDetailActivity.class);
+                if(favoritePressed){
+                    intent.putExtra(Constant.RECIPE_ID, favorites.get(currentIndex));
+                }else{
+                    intent.putExtra(Constant.RECIPE_ID, recipeList.get(currentIndex));
+                }
+                startActivity(intent);
+                return true;
+            }
+        });
     }
+
 
     public void initRecipeList(){
         recipeList = new ArrayList<>();

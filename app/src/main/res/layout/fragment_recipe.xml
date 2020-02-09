@@ -86,8 +86,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment"
-        android:name="com.helloworld.cookeat.RecipeCard"
+        android:id="@+id/recipe_card_fragment"
+        android:name="com.helloworld.cookeat.fragment.RecipeCard"
         android:layout_width="350dp"
         android:layout_height="400dp"
         app:layout_constraintBottom_toBottomOf="parent"

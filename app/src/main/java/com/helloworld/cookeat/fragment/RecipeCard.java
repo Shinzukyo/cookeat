@@ -1,13 +1,9 @@
-package com.helloworld.cookeat;
+package com.helloworld.cookeat.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,9 +15,9 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.helloworld.cookeat.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.logging.Logger;
@@ -30,13 +26,10 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 public class RecipeCard extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public TextView pictureName;
     public ImageView recipePicture;
 
-    // TODO: Rename and change types of parameters
-    private String idRecipe = "sFQ2JOZGPORmW048IkpW";
+    private String idRecipe;
     public RecipeCard() {
         // Required empty public constructor
     }
