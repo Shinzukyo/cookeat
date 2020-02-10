@@ -42,7 +42,6 @@ public class StepDetail extends AppCompatActivity {
 
     CountDownTimer timer;
 
-
     Button timerButton;
 
     @Override

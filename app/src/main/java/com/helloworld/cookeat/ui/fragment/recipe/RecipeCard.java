@@ -35,7 +35,6 @@ public class RecipeCard extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_recipe_card, container, false);
-        //this.updateDisplay();
         return view;
     }
 
