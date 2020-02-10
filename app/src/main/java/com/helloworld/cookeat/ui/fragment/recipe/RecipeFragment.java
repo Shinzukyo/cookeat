@@ -1,4 +1,4 @@
-package com.helloworld.cookeat.ui.recipe;
+package com.helloworld.cookeat.ui.fragment.recipe;
 
 import android.content.Context;
 import android.content.Intent;
@@ -30,10 +30,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.helloworld.cookeat.Constant;
+import com.helloworld.cookeat.service.Constant;
 import com.helloworld.cookeat.R;
-import com.helloworld.cookeat.fragment.RecipeCard;
-import com.helloworld.cookeat.fragment.RecipeDetailActivity;
+import com.helloworld.cookeat.ui.activity.RecipeDetailActivity;
 
 
 

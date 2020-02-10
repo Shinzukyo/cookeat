@@ -1,4 +1,4 @@
-package com.helloworld.cookeat;
+package com.helloworld.cookeat.ui.activity;
 
 import android.os.Bundle;
 
@@ -15,6 +15,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.helloworld.cookeat.R;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 

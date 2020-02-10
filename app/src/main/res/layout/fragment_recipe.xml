@@ -87,7 +87,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/recipe_card_fragment"
-        android:name="com.helloworld.cookeat.fragment.RecipeCard"
+        android:name="com.helloworld.cookeat.ui.fragment.recipe.RecipeCard"
         android:layout_width="350dp"
         android:layout_height="400dp"
         app:layout_constraintBottom_toBottomOf="parent"

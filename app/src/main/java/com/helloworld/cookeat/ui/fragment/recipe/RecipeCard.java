@@ -1,4 +1,4 @@
-package com.helloworld.cookeat.fragment;
+package com.helloworld.cookeat.ui.fragment.recipe;
 
 import android.os.Bundle;
 
@@ -19,10 +19,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.helloworld.cookeat.R;
 import com.squareup.picasso.Picasso;
-
-import java.util.logging.Logger;
-
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 public class RecipeCard extends Fragment {

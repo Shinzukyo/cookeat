@@ -1,4 +1,4 @@
-package com.helloworld.cookeat.fragment;
+package com.helloworld.cookeat.ui.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,19 +7,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.helloworld.cookeat.Constant;
+import com.helloworld.cookeat.service.Constant;
 import com.helloworld.cookeat.R;
-import com.helloworld.cookeat.StepDetail;
+import com.helloworld.cookeat.ui.activity.StepDetail;
 import com.helloworld.cookeat.model.Ingredient;
 import com.helloworld.cookeat.model.Recipe;
 import com.helloworld.cookeat.model.Step;

@@ -1,4 +1,4 @@
-package com.helloworld.cookeat.ui.home;
+package com.helloworld.cookeat.ui.fragment.home;
 
 import androidx.fragment.app.Fragment;
 

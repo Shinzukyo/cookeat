@@ -23,7 +23,7 @@
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
             android:value="AIzaSyC_idveTiQmvG_7MVu6kdJj4_h_eG80x_c" />
-        <receiver android:name=".widget.StepWidget">
+        <receiver android:name=".ui.widget.StepWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -33,14 +33,14 @@
                 android:resource="@xml/step_widget_info" />
         </receiver>
 
-        <activity android:name=".StepDetail">
+        <activity android:name=".ui.activity.StepDetail">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
-        <activity android:name=".fragment.RecipeDetailActivity" />
+        <activity android:name=".ui.activity.RecipeDetailActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

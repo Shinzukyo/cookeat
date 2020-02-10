@@ -1,10 +1,9 @@
-package com.helloworld.cookeat;
+package com.helloworld.cookeat.ui.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.appwidget.AppWidgetManager;
-import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -14,17 +13,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.helloworld.cookeat.R;
 import com.helloworld.cookeat.model.Step;
-import com.helloworld.cookeat.widget.StepWidget;
+import com.helloworld.cookeat.service.Constant;
+import com.helloworld.cookeat.ui.widget.StepWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +39,8 @@ public class StepDetail extends AppCompatActivity {
     TextView recipeNameView;
     TextView stepDetail;
     TextView timerTextView;
+
+    CountDownTimer timer;
 
 
     Button timerButton;
@@ -90,24 +90,28 @@ public class StepDetail extends AppCompatActivity {
     }
 
     private void launchTimer() {
+        if(this.timer != null){
+            this.timer.cancel();
+            this.timer = null;
+            timerTextView.setText("");
+        }else{
+            this.timer =  new CountDownTimer(this.timerValue, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    int seconds = (int) (millisUntilFinished / 1000);
+                    int minutes = seconds / 60;
+                    seconds = seconds % 60;
+                    timerTextView.setText(String.format("%02d", minutes)+ ":"+String.format("%02d", seconds));
+                }
 
+                public void onFinish() {
+                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                    r.play();
+                }
 
-        new CountDownTimer(this.timerValue, 1000) {
+            }.start();
+        }
 
-            public void onTick(long millisUntilFinished) {
-                int seconds = (int) (millisUntilFinished / 1000);
-                int minutes = seconds / 60;
-                seconds = seconds % 60;
-                timerTextView.setText(String.format("%02d", minutes)+ ":"+String.format("%02d", seconds));
-            }
-
-            public void onFinish() {
-                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                r.play();
-            }
-
-        }.start();
     }
 
 
