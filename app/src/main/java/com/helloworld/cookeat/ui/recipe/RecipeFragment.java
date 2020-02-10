@@ -8,12 +8,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.awareness.Awareness;
+import com.google.android.gms.awareness.fence.TimeFence;
+import com.google.android.gms.awareness.snapshot.TimeIntervalsResponse;
+import com.google.android.gms.awareness.state.TimeIntervals;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -23,6 +33,8 @@ import com.helloworld.cookeat.R;
 import com.helloworld.cookeat.fragment.RecipeCard;
 import com.helloworld.cookeat.fragment.RecipeDetailActivity;
 
+
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,16 +43,33 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+
+
 public class RecipeFragment extends Fragment {
 
+    public static final String LOG = "LOG";
+    public static final String RECOMMENDED = "recommended";
+    public static final String DEFAULT = "default";
+    public static final String FAVORITE = "favorite";
     private ArrayList<String> recipeList;
     private int currentIndex;
     public static final String FAVORITE_FILE = "favorite.txt";
     private ArrayList<String> favorites;
     private boolean favoritePressed = false;
+    private String selectedList = "default";
+    private TextView mWeatherTextView;
+
+    private ArrayList<String> recommendedList;
+    private ArrayList<String> recommendedTag;
+
+    private String mealType;
+    private String hasTime;
+
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,6 +78,12 @@ public class RecipeFragment extends Fragment {
         View view =inflater.inflate(R.layout.fragment_recipe, container, false);
         this.initRecipeList();
         this.readFavorite();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addApi(Awareness.API)
+                .build();
+        mGoogleApiClient.connect();
+
         return view;
     }
 
@@ -60,20 +95,34 @@ public class RecipeFragment extends Fragment {
         getView().findViewById(R.id.button_next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(favoritePressed){
-                    if(currentIndex == favorites.size() - 1){
-                        currentIndex = 0;
-                    }else{
-                        currentIndex++;
-                    }
-                }else{
-                    if(currentIndex == recipeList.size() - 1){
-                        currentIndex = 0;
-                    }else{
-                        currentIndex++;
-                    }
-                }
+                switch (selectedList){
+                    case DEFAULT :
+                        if(currentIndex == recipeList.size() - 1){
+                            currentIndex = 0;
+                        }else{
+                            currentIndex++;
+                        }
+                        break;
 
+                    case FAVORITE :
+                        if(currentIndex == favorites.size() - 1){
+                            currentIndex = 0;
+                        }else{
+                            currentIndex++;
+                        }
+                        break;
+
+                    case RECOMMENDED:
+                        if(currentIndex == recommendedList.size() - 1){
+                            currentIndex = 0;
+                        }else{
+                            currentIndex++;
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
                 updateRecipeFragmentId();
             }
         });
@@ -81,20 +130,34 @@ public class RecipeFragment extends Fragment {
         getView().findViewById(R.id.button_previous).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(favoritePressed){
-                    if(currentIndex == 0){
-                        currentIndex = favorites.size() -1;
-                    }else{
-                        currentIndex--;
-                    }
-                }else{
-                    if(currentIndex == 0){
-                        currentIndex = recipeList.size() -1;
-                    }else{
-                        currentIndex--;
-                    }
-                }
+                switch (selectedList){
+                    case DEFAULT :
+                        if(currentIndex == 0){
+                            currentIndex = recipeList.size() -1;
+                        }else{
+                            currentIndex--;
+                        }
+                        break;
 
+                    case FAVORITE :
+                        if(currentIndex == 0){
+                            currentIndex = favorites.size() -1;
+                        }else{
+                            currentIndex--;
+                        }
+                        break;
+
+                    case RECOMMENDED:
+                        if(currentIndex == 0){
+                            currentIndex = recommendedList.size() -1;
+                        }else{
+                            currentIndex--;
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
                 updateRecipeFragmentId();
             }
         });
@@ -119,7 +182,11 @@ public class RecipeFragment extends Fragment {
         getView().findViewById(R.id.recipe_favorite).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                favoritePressed = !favoritePressed;
+                if(!selectedList.equals(FAVORITE)){
+                    selectedList = FAVORITE;
+                }else{
+                    selectedList = DEFAULT;
+                }
                 currentIndex = 0;
                 updateRecipeFragmentId();
             }
@@ -128,7 +195,7 @@ public class RecipeFragment extends Fragment {
         getView().findViewById(R.id.recipe_random).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                favoritePressed = false;
+                selectedList = DEFAULT;
                 currentIndex = 0;
                 Collections.shuffle(recipeList);
                 updateRecipeFragmentId();
@@ -138,7 +205,9 @@ public class RecipeFragment extends Fragment {
         getView().findViewById(R.id.recipe_advice).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                readFavorite();
+                selectedList = RECOMMENDED;
+                currentIndex = 0;
+                getAwareness();
             }
         });
 
@@ -146,15 +215,107 @@ public class RecipeFragment extends Fragment {
             @Override
             public boolean onLongClick(View v) {
                 Intent intent = new Intent(getActivity(), RecipeDetailActivity.class);
-                if(favoritePressed){
-                    intent.putExtra(Constant.RECIPE_ID, favorites.get(currentIndex));
-                }else{
-                    intent.putExtra(Constant.RECIPE_ID, recipeList.get(currentIndex));
+                switch (selectedList){
+                    case DEFAULT :
+                        intent.putExtra(Constant.RECIPE_ID, recipeList.get(currentIndex));
+                        break;
+
+                    case FAVORITE :
+                        intent.putExtra(Constant.RECIPE_ID, favorites.get(currentIndex));
+                        break;
+
+                    case RECOMMENDED:
+                        intent.putExtra(Constant.RECIPE_ID, recommendedList.get(currentIndex));
+                        break;
+
+                    default:
+                        break;
                 }
                 startActivity(intent);
                 return true;
             }
         });
+    }
+
+    private void getRecommendedTag() {
+        recommendedTag = new ArrayList<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("tag").whereIn("name", Arrays.asList(hasTime,mealType))
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                //recipeList.add(document.getId());
+                                recommendedTag.add(document.getData().get("id").toString());
+                            }
+                            getRecommendedRecipe();
+                        } else {
+                            Log.d("TEST", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void getRecommendedRecipe() {
+        recommendedList = new ArrayList<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Log.v("HERE",recommendedTag.toString());
+        db.collection("recipeTag").whereIn("idTag", recommendedTag)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                recommendedList.add(document.getData().get("idRecipe").toString());
+                            }
+                            updateRecipeFragmentId();
+                        } else {
+                            Log.d("TEST", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void getAwareness(){
+        Awareness.getSnapshotClient(getActivity()).getTimeIntervals()
+                .addOnSuccessListener(new OnSuccessListener<TimeIntervalsResponse>() {
+                    @Override
+                    public void onSuccess(TimeIntervalsResponse timeIntervalsResponse) {
+                        TimeIntervals intervals = timeIntervalsResponse.getTimeIntervals();
+
+                        if(intervals.hasTimeInterval(TimeFence.TIME_INTERVAL_WEEKDAY)){
+                            hasTime = "Fast";
+                        }else if( intervals.hasTimeInterval(TimeFence.TIME_INTERVAL_WEEKEND)){
+                            hasTime = "Slow";
+                        }
+
+                        if (intervals.hasTimeInterval(TimeFence.TIME_INTERVAL_HOLIDAY)) {
+                            hasTime = "Slow";
+                        }
+
+                        if (intervals.hasTimeInterval(TimeFence.TIME_INTERVAL_MORNING)) {
+                            mealType = "Breakfast";
+                        } else if (intervals.hasTimeInterval(TimeFence.TIME_INTERVAL_AFTERNOON)) {
+                            mealType = "Lunch";
+                        } else if (intervals.hasTimeInterval(TimeFence.TIME_INTERVAL_EVENING)) {
+                            mealType = "Diner";
+                        } else if (intervals.hasTimeInterval(TimeFence.TIME_INTERVAL_NIGHT)) {
+                            mealType = "Snack";
+                        } else {
+                            mealType = "Snack";
+                        }
+                        getRecommendedTag();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.v(LOG,e.toString());
+                    }
+                });
     }
 
 
@@ -184,10 +345,21 @@ public class RecipeFragment extends Fragment {
         FragmentManager fm = getChildFragmentManager();
         List<Fragment> fragmentList = fm.getFragments();
         RecipeCard rc = (RecipeCard) fragmentList.get(0);
-        if(favoritePressed){
-            rc.setIdRecipe(this.favorites.get(this.currentIndex));
-        }else{
-            rc.setIdRecipe(this.recipeList.get(this.currentIndex));
+        switch (selectedList){
+            case DEFAULT :
+                rc.setIdRecipe(this.recipeList.get(this.currentIndex));
+                break;
+
+            case FAVORITE :
+                rc.setIdRecipe(this.favorites.get(this.currentIndex));
+                break;
+
+            case RECOMMENDED:
+                rc.setIdRecipe(this.recommendedList.get(this.currentIndex));
+                break;
+
+            default:
+                break;
         }
         rc.updateDisplay();
     }

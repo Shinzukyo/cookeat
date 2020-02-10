@@ -14,7 +14,7 @@ import com.helloworld.cookeat.R;
  */
 public class StepWidget extends AppWidgetProvider {
 
-    public static String description = "TEST";
+    public static String description = "";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {

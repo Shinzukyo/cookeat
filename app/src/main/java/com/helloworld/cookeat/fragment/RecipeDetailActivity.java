@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -111,6 +112,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.v("TEST",document.getData().toString());
                                 Step step = new Step(document.getData().get("id").toString(),
                                                      document.getData().get("description").toString(),
                                                      Integer.parseInt(document.getData().get("stepNumber").toString()),

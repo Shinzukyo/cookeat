@@ -5,10 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,13 +35,22 @@ public class StepDetail extends AppCompatActivity {
     private String recipeName;
     private List<Step> steps;
     private int currentIndex;
+
+    private int timerValue;
+
     TextView recipeNameView;
     TextView stepDetail;
+    TextView timerTextView;
+
+
+    Button timerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_detail);
+
+        timerTextView = findViewById(R.id.timerTextView);
 
         this.idRecipe = getIntent().getStringExtra(Constant.RECIPE_ID);
         this.recipeName = getIntent().getStringExtra(Constant.RECIPE_NAME);
@@ -63,6 +80,34 @@ public class StepDetail extends AppCompatActivity {
                 updateStepDisplay();
             }
         });
+
+        findViewById(R.id.timerButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchTimer();
+            }
+        });
+    }
+
+    private void launchTimer() {
+
+
+        new CountDownTimer(this.timerValue, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                int seconds = (int) (millisUntilFinished / 1000);
+                int minutes = seconds / 60;
+                seconds = seconds % 60;
+                timerTextView.setText(String.format("%02d", minutes)+ ":"+String.format("%02d", seconds));
+            }
+
+            public void onFinish() {
+                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                r.play();
+            }
+
+        }.start();
     }
 
 
@@ -104,7 +149,18 @@ public class StepDetail extends AppCompatActivity {
             if(step.getStepNumber() == currentIndex){
                 stepDetail.setText(step.getDescription());
                 updateWidget(step.getDescription());
+                updateTimerButton(step.getTimer());
             }
+        }
+    }
+
+    private void updateTimerButton(int timer) {
+        timerButton = findViewById(R.id.timerButton);
+        if(timer == 0){
+            timerButton.setVisibility(View.GONE);
+        }else{
+            this.timerValue = timer * 60000;
+            timerButton.setVisibility(View.VISIBLE);
         }
     }
 

@@ -19,7 +19,7 @@
     <TextView
         android:id="@+id/stepDetail"
         android:layout_width="329dp"
-        android:layout_height="382dp"
+        android:layout_height="312dp"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,4 +55,16 @@
         app:layout_constraintEnd_toStartOf="@+id/timerButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/stepDetail" />
+
+    <TextView
+        android:id="@+id/timerTextView"
+        android:layout_width="142dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="400dp"
+        android:gravity="center"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
