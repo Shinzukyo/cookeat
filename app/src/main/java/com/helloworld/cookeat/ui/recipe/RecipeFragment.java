@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -60,7 +62,7 @@ public class RecipeFragment extends Fragment {
     public static final String FAVORITE_FILE = "favorite.txt";
     private ArrayList<String> favorites;
     private boolean favoritePressed = false;
-    private String selectedList = "default";
+    private String selectedList = DEFAULT;
     private TextView mWeatherTextView;
 
     private ArrayList<String> recommendedList;
@@ -68,6 +70,8 @@ public class RecipeFragment extends Fragment {
 
     private String mealType;
     private String hasTime;
+
+    private Button addFavoriteButton;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -165,16 +169,66 @@ public class RecipeFragment extends Fragment {
         getView().findViewById(R.id.button_add_favorite).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(favorites.contains(recipeList.get(currentIndex))){
-                    for (int i = 0; i < favorites.size(); i++) {
-                        if(favorites.get(i).equals(recipeList.get(currentIndex))  ){
-                            favorites.remove(i);
+                switch (selectedList){
+                    case DEFAULT :
+                        if(favorites.contains(recipeList.get(currentIndex))){
+                            for (int i = 0; i < favorites.size(); i++) {
+                                if(favorites.get(i).equals(recipeList.get(currentIndex))  ){
+                                    favorites.remove(i);
+                                }
+                            }
+                            if(favorites.size() == 0){
+                                selectedList = DEFAULT;
+                                Toast toast = Toast.makeText(getContext(),"Vous n'avez plus de favoris",Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                            currentIndex = 0;
+                        }else{
+                            favorites.add(recipeList.get(currentIndex));
                         }
-                    }
-                    currentIndex = 0;
-                }else{
-                    favorites.add(recipeList.get(currentIndex));
+                        break;
+
+                    case FAVORITE :
+                        if(favorites.contains(favorites.get(currentIndex))){
+                            for (int i = 0; i < favorites.size(); i++) {
+                                if(favorites.get(i).equals(favorites.get(currentIndex))  ){
+                                    favorites.remove(i);
+                                }
+                            }
+                            if(favorites.size() == 0){
+                                selectedList = DEFAULT;
+                                Toast toast = Toast.makeText(getContext(),"Vous n'avez plus de favoris",Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                            currentIndex = 0;
+                        }else{
+                            favorites.add(favorites.get(currentIndex));
+                        }
+                        break;
+
+                    case RECOMMENDED:
+                        if(favorites.contains(recommendedList.get(currentIndex))){
+                            for (int i = 0; i < favorites.size(); i++) {
+                                if(favorites.get(i).equals(recommendedList.get(currentIndex))  ){
+                                    favorites.remove(i);
+                                }
+                            }
+                            if(favorites.size() == 0){
+                                selectedList = DEFAULT;
+                                Toast toast = Toast.makeText(getContext(),"Vous n'avez plus de favoris",Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                            currentIndex = 0;
+                        }else{
+                            favorites.add(recommendedList.get(currentIndex));
+                        }
+                        break;
+
+                    default:
+                        break;
                 }
+                updateRecipeFragmentId();
+                updateFavoriteButton();
                 writeFavorite();
             }
         });
@@ -182,13 +236,18 @@ public class RecipeFragment extends Fragment {
         getView().findViewById(R.id.recipe_favorite).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!selectedList.equals(FAVORITE)){
-                    selectedList = FAVORITE;
+                if(favorites.size() == 0){
+                    Toast toast = Toast.makeText(getContext(),"Vous n'avez aucun favoris",Toast.LENGTH_SHORT);
+                    toast.show();
                 }else{
-                    selectedList = DEFAULT;
+                    if(!selectedList.equals(FAVORITE)){
+                        selectedList = FAVORITE;
+                    }else{
+                        selectedList = DEFAULT;
+                    }
+                    currentIndex = 0;
+                    updateRecipeFragmentId();
                 }
-                currentIndex = 0;
-                updateRecipeFragmentId();
             }
         });
 
@@ -362,6 +421,39 @@ public class RecipeFragment extends Fragment {
                 break;
         }
         rc.updateDisplay();
+        updateFavoriteButton();
+    }
+
+    private void updateFavoriteButton() {
+        addFavoriteButton = getView().findViewById(R.id.button_add_favorite);
+        switch (selectedList){
+            case DEFAULT :
+                if(favorites.contains(this.recipeList.get(this.currentIndex))){
+                    addFavoriteButton.setText(R.string.remove_favorite);
+                }else{
+                    addFavoriteButton.setText(R.string.add_favorite);
+                }
+                break;
+
+            case FAVORITE :
+                if(favorites.contains(this.favorites.get(this.currentIndex))){
+                    addFavoriteButton.setText(R.string.remove_favorite);
+                }else{
+                    addFavoriteButton.setText(R.string.add_favorite);
+                }
+                break;
+
+            case RECOMMENDED:
+                if(favorites.contains(this.recommendedList.get(this.currentIndex))){
+                    addFavoriteButton.setText(R.string.remove_favorite);
+                }else{
+                    addFavoriteButton.setText(R.string.add_favorite);
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
     public void readFavorite() {
